@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>e-OPR Saujana - SMK Saujana Impian</title>
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +16,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans:['Inter', 'sans-serif'], },
+                    fontFamily: { sans:['"Plus Jakarta Sans"', 'sans-serif'], },
                     colors: { brandBlue: '#1e3a8a', brandYellow: '#facc15', brandLightBlue: '#eff6ff', }
                 }
             }
@@ -66,13 +68,6 @@
         /* Spinner */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #1e3a8a; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* FIX PDF DESKTOP: Elak paparan terpotong separuh */
-        html.pdf-rendering, html.pdf-rendering body {
-            overflow: visible !important;
-            height: auto !important;
-            min-height: auto !important;
-        }
     </style>
 </head>
 <body class="min-h-screen lg:h-screen flex flex-col font-sans text-gray-800 bg-gray-50 lg:overflow-hidden">
@@ -92,17 +87,17 @@
                     <i class="fas fa-edit"></i> Borang OPR
                 </button>
                 <button id="tab-dashboard" onclick="switchTab('dashboard')" class="px-4 py-1.5 text-sm font-medium text-gray-500 hover:text-brandBlue rounded-md transition-all flex items-center gap-2">
-                    <i class="fas fa-cloud"></i> Dashboard
+                    <i class="fas fa-database"></i> Dashboard
                 </button>
             </nav>
         </div>
 
         <div class="flex items-center gap-2">
-            <button onclick="switchTab('dashboard')" class="md:hidden text-gray-500 bg-gray-100 p-2 rounded-lg text-sm border"><i class="fas fa-cloud"></i></button>
+            <button onclick="switchTab('dashboard')" class="md:hidden text-gray-500 bg-gray-100 p-2 rounded-lg text-sm border"><i class="fas fa-database"></i></button>
             <button onclick="switchTab('janaan')" class="md:hidden text-brandBlue bg-blue-50 p-2 rounded-lg text-sm border border-blue-100"><i class="fas fa-edit"></i></button>
 
             <button onclick="simpanKeGoogleSheet()" id="btn-save" class="bg-brandBlue hover:bg-blue-900 text-white font-semibold py-2 px-4 lg:px-6 rounded-lg shadow-md transition-all flex items-center gap-2 text-sm lg:text-base border border-blue-800">
-                <i class="fas fa-save"></i> <span class="hidden sm:inline">Simpan</span>
+                <i class="fas fa-save"></i> <span class="hidden sm:inline">Simpan Rekod</span>
             </button>
         </div>
     </header>
@@ -137,8 +132,14 @@
                                 </select>
                             </div>
                         </div>
-                        <div><label class="block text-xs font-semibold text-gray-700 mb-1">Panitia / Nama Kelab</label><input type="text" id="in_panitia" placeholder="Cth: PANITIA SAINS" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></div>
-                        <div><label class="block text-xs font-semibold text-gray-700 mb-1">Tajuk Program / Aktiviti</label><input type="text" id="in_tajuk" placeholder="Cth: BENGKEL MENJAWAB SPM" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Panitia / Nama Kelab <span class="text-gray-400 font-normal text-[10px]">(Maks 50)</span></label>
+                            <input type="text" id="in_panitia" maxlength="50" placeholder="Cth: PANITIA SAINS" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Tajuk Program / Aktiviti <span class="text-gray-400 font-normal text-[10px]">(Maks 80)</span></label>
+                            <input type="text" id="in_tajuk" maxlength="80" placeholder="Cth: BENGKEL MENJAWAB SPM" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2">
+                        </div>
                     </div>
 
                     <div class="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
@@ -147,17 +148,36 @@
                             <div><label class="block text-xs font-semibold text-gray-700 mb-1">Tarikh</label><input type="date" id="in_tarikh" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></div>
                             <div><label class="block text-xs font-semibold text-gray-700 mb-1">Masa</label><input type="time" id="in_masa" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></div>
                         </div>
-                        <div><label class="block text-xs font-semibold text-gray-700 mb-1">Lokasi</label><input type="text" id="in_lokasi" placeholder="Cth: DEWAN SEKOLAH" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></div>
-                        <div><label class="block text-xs font-semibold text-gray-700 mb-1">Penglibatan (Sasaran)</label><input type="text" id="in_penglibatan" placeholder="Cth: SEMUA GURU" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Lokasi <span class="text-gray-400 font-normal text-[10px]">(Maks 40)</span></label>
+                            <input type="text" id="in_lokasi" maxlength="40" placeholder="Cth: DEWAN SEKOLAH" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Penglibatan (Sasaran) <span class="text-gray-400 font-normal text-[10px]">(Maks 40)</span></label>
+                            <input type="text" id="in_penglibatan" maxlength="40" placeholder="Cth: SEMUA GURU" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2">
+                        </div>
                     </div>
 
                     <div class="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pengisian Laporan</h3>
                         <div class="bg-blue-100/50 p-3 rounded-md mb-2 border border-blue-200"><p class="text-xs text-brandBlue"><i class="fas fa-lightbulb text-brandYellow mr-1"></i> Gunakan simbol koma bertitik ( <strong>;</strong> ) untuk membina senarai bullet.</p></div>
-                        <div><label class="block text-xs font-semibold text-gray-700 mb-1">1. Objektif</label><textarea id="in_objektif" rows="3" placeholder="Contoh: Meningkatkan kefahaman murid; Memberi pendedahan;" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></textarea></div>
-                        <div><label class="block text-xs font-semibold text-gray-700 mb-1">2. Ringkasan Aktiviti</label><textarea id="in_ringkasan" rows="3" placeholder="Contoh: Taklimat; Latihan;" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></textarea></div>
-                        <div><label class="block text-xs font-semibold text-gray-700 mb-1">3. Impak / Hasil</label><textarea id="in_impak" rows="3" placeholder="Contoh: Disiplin terkawal;" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></textarea></div>
-                        <div><label class="block text-xs font-semibold text-gray-700 mb-1">4. Cadangan Penambahbaikan</label><textarea id="in_cadangan" rows="3" placeholder="Contoh: Panjangkan masa bengkel;" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></textarea></div>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">1. Objektif <span class="text-gray-400 font-normal text-[10px]">(Maks 250)</span></label>
+                            <textarea id="in_objektif" rows="3" maxlength="250" placeholder="Contoh: Meningkatkan kefahaman murid; Memberi pendedahan;" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">2. Ringkasan Aktiviti <span class="text-gray-400 font-normal text-[10px]">(Maks 300)</span></label>
+                            <textarea id="in_ringkasan" rows="3" maxlength="300" placeholder="Contoh: Taklimat; Latihan;" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">3. Impak / Hasil <span class="text-gray-400 font-normal text-[10px]">(Maks 250)</span></label>
+                            <textarea id="in_impak" rows="3" maxlength="250" placeholder="Contoh: Disiplin terkawal;" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">4. Cadangan Penambahbaikan <span class="text-gray-400 font-normal text-[10px]">(Maks 250)</span></label>
+                            <textarea id="in_cadangan" rows="3" maxlength="250" placeholder="Contoh: Panjangkan masa bengkel;" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></textarea>
+                        </div>
                     </div>
 
                     <div class="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
@@ -172,7 +192,10 @@
                     <div class="space-y-3 bg-blue-50/50 p-4 rounded-xl border border-blue-100 mb-4 lg:mb-8">
                         <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Ruangan Pengesahan</h3>
                         <div class="grid grid-cols-1 gap-4">
-                            <div><label class="block text-xs font-semibold text-gray-700 mb-1">Disediakan Oleh</label><input type="text" id="in_disediakan" placeholder="Cth: SETIAUSAHA" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2 uppercase"></div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Disediakan Oleh <span class="text-gray-400 font-normal text-[10px]">(Maks 50)</span></label>
+                                <input type="text" id="in_disediakan" maxlength="50" placeholder="Cth: SETIAUSAHA" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2 uppercase">
+                            </div>
                             <div><label class="block text-xs font-semibold text-gray-700 mb-1">Tarikh Dijana</label><input type="date" id="in_dijana" class="w-full px-3 py-2 border rounded-md text-sm focus:ring-2"></div>
                         </div>
                     </div>
@@ -220,19 +243,18 @@
                     </div>
 
                     <div class="flex-1 flex px-7 pt-4 pb-4 gap-6">
-                        <!-- Ruangan Gambar (3 Sahaja) -->
                         <div class="flex gap-4 w-[310px] flex-shrink-0">
                             <div class="bg-brandBlue w-14 rounded-full shadow-md relative overflow-hidden flex-shrink-0 border-2 border-white ring-1 ring-gray-200">
                                 <div class="absolute inset-0 flex items-center justify-center"><h3 id="out_vertical_text" style="transform: rotate(-90deg); transform-origin: center center;" class="text-brandYellow font-black text-[1.6rem] tracking-[0.25em] whitespace-nowrap drop-shadow-md">LAPORAN PLC</h3></div>
                             </div>
-                            <div class="flex-1 flex flex-col gap-3.5">
+                            
+                            <div class="flex-1 flex flex-col gap-4">
                                 <div class="flex-1 bg-white/80 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden relative group flex items-center justify-center min-h-[150px] shadow-sm backdrop-blur-sm"><img id="out_gambar1" class="absolute inset-0 w-full h-full object-cover hidden"><div class="text-gray-400 text-center" id="placeholder1"><i class="fas fa-camera text-2xl mb-1 opacity-50"></i></div></div>
                                 <div class="flex-1 bg-white/80 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden relative group flex items-center justify-center min-h-[150px] shadow-sm backdrop-blur-sm"><img id="out_gambar2" class="absolute inset-0 w-full h-full object-cover hidden"><div class="text-gray-400 text-center" id="placeholder2"><i class="fas fa-camera text-2xl mb-1 opacity-50"></i></div></div>
                                 <div class="flex-1 bg-white/80 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden relative group flex items-center justify-center min-h-[150px] shadow-sm backdrop-blur-sm"><img id="out_gambar3" class="absolute inset-0 w-full h-full object-cover hidden"><div class="text-gray-400 text-center" id="placeholder3"><i class="fas fa-camera text-2xl mb-1 opacity-50"></i></div></div>
                             </div>
                         </div>
 
-                        <!-- Ruangan Teks -->
                         <div class="flex-1 flex flex-col justify-between pt-1">
                             <div class="glass-box relative border-2 border-blue-100 rounded-xl p-5 mb-5 flex-1 mt-3"><div class="absolute -top-3.5 left-5 bg-brandBlue text-white px-5 py-1 rounded-full text-xs font-bold tracking-widest shadow-md">OBJEKTIF</div><ul id="out_objektif" class="custom-list text-gray-800 text-sm leading-relaxed space-y-1 mt-1"><li>-</li></ul></div>
                             <div class="glass-box relative border-2 border-blue-100 rounded-xl p-5 mb-5 flex-1 mt-3"><div class="absolute -top-3.5 left-5 bg-brandBlue text-white px-5 py-1 rounded-full text-xs font-bold tracking-widest shadow-md">RINGKASAN AKTIVITI</div><ul id="out_ringkasan" class="list-decimal pl-5 text-gray-800 text-sm leading-relaxed space-y-1 mt-1 marker:text-brandBlue marker:font-bold"><li>-</li></ul></div>
@@ -255,8 +277,9 @@
                 
                 <div class="flex items-center justify-between border-b pb-4">
                     <h2 class="text-2xl font-bold text-brandBlue flex items-center gap-2">
-                        <i class="fas fa-cloud text-brandYellow"></i> Cloud Dashboard
+                        <i class="fas fa-database text-brandYellow"></i> Dashboard Utama
                     </h2>
+                    <p class="text-sm text-gray-500 hidden sm:block">Pangkalan Data Berpusat</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -275,31 +298,12 @@
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
-                    
-                    <!-- BAHAGIAN PENAPIS (FILTER) -->
-                    <div class="p-4 bg-gray-50 border-b flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                        <h3 class="font-bold text-gray-700 flex-shrink-0 flex items-center"><i class="fas fa-list-ul mr-2 text-brandBlue"></i>Senarai OPR Disimpan</h3>
-                        
-                        <div class="flex flex-col sm:flex-row items-center gap-2 w-full lg:w-auto">
-                            <div class="relative w-full sm:w-auto">
-                                <i class="fas fa-filter absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
-                                <select id="filter-unit" onchange="applyFilters()" class="pl-8 pr-3 py-1.5 text-xs text-gray-700 font-medium border border-gray-300 rounded-md focus:ring-2 focus:ring-brandBlue w-full outline-none shadow-sm cursor-pointer">
-                                    <option value="ALL">Semua Unit</option>
-                                    <option value="UNIT KURIKULUM">Kurikulum</option>
-                                    <option value="UNIT HEM">HEM</option>
-                                    <option value="UNIT KOKURIKULUM">Kokurikulum</option>
-                                </select>
-                            </div>
-                            <div class="relative w-full sm:w-auto">
-                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
-                                <input type="text" id="filter-disediakan" onkeyup="applyFilters()" placeholder="Tapis: Disediakan Oleh..." class="pl-8 pr-3 py-1.5 text-xs text-gray-700 font-medium border border-gray-300 rounded-md focus:ring-2 focus:ring-brandBlue w-full outline-none shadow-sm">
-                            </div>
-                            <button onclick="fetchFromGoogleSheets()" class="text-xs font-bold text-brandBlue bg-blue-100 hover:bg-blue-200 px-4 py-1.5 rounded-md transition-all flex items-center justify-center whitespace-nowrap w-full sm:w-auto shadow-sm">
-                                <i class="fas fa-sync-alt mr-1"></i> Refresh
-                            </button>
-                        </div>
+                    <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                        <h3 class="font-bold text-gray-700"><i class="fas fa-list-ul mr-2 text-brandBlue"></i>Senarai OPR Disimpan</h3>
+                        <button onclick="fetchFromGoogleSheets()" class="text-xs font-bold text-brandBlue bg-blue-100 hover:bg-blue-200 px-3 py-1.5 rounded-md transition-all flex items-center gap-1">
+                            <i class="fas fa-sync-alt"></i> refresh
+                        </button>
                     </div>
-
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[800px]">
                             <thead>
@@ -319,8 +323,8 @@
                     </div>
                     <div id="table-empty" class="py-10 text-center text-gray-500">
                         <div class="loader mx-auto mb-3 hidden" id="table-loader"></div>
-                        <i class="fas fa-cloud-download-alt text-4xl mb-3 text-gray-300 block" id="table-icon"></i>
-                        <p class="text-sm" id="table-msg">Memuat turun data...</p>
+                        <i class="fas fa-database text-4xl mb-3 text-gray-300 block" id="table-icon"></i>
+                        <p class="text-sm" id="table-msg">Sila klik "refresh" untuk memuat turun data.</p>
                     </div>
                 </div>
 
@@ -331,32 +335,96 @@
 
     <!-- JS LOGIC -->
     <script>
-        // =========================================================
-        // URL GOOGLE APPS SCRIPT
-        // =========================================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqWtO_6N0uuvpcCH9RzMYgVpoayREFOQ89qyx4NBSrV8fojlHUPRYUYeaZ8lkhMNlfIg/exec";
-        
-        let globalDbRecords =[]; // Cache tempatan untuk table
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxeHjOTnu65eKo9SfG8KIUohdV2eBNzl87-jWNX2w3Nj-YbuKkgijxh8IiDvcvJQFV4g/exec";
+        let globalDbRecords =[];
 
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('in_tarikh').value = today;
-        document.getElementById('in_dijana').value = today;
+        // Set default Tarikh
+        const todayStr = new Date().toISOString().split('T')[0];
+        if(document.getElementById('in_tarikh')) document.getElementById('in_tarikh').value = todayStr;
+        if(document.getElementById('in_dijana')) document.getElementById('in_dijana').value = todayStr;
         
+        // --- FUNGSI FORMAT MASA 12-JAM (AM/PM) UNTUK PDF ---
+        function formatTimeDisplay(timeStr) {
+            if (!timeStr) return '-';
+            try {
+                let s = String(timeStr).trim();
+                
+                if (s.includes('T')) {
+                    let d = new Date(s);
+                    if (!isNaN(d.getTime())) {
+                        let hh = d.getHours();
+                        let mm = String(d.getMinutes()).padStart(2, '0');
+                        let ampm = hh >= 12 ? 'PM' : 'AM';
+                        hh = hh % 12; hh = hh ? hh : 12;
+                        return `${String(hh).padStart(2, '0')}:${mm} ${ampm}`;
+                    }
+                }
+                if (s.includes(':')) {
+                    let parts = s.split(':');
+                    let hh = parseInt(parts[0], 10);
+                    let mm = parts[1].substring(0, 2);
+                    if (!isNaN(hh)) {
+                        let ampm = hh >= 12 ? 'PM' : 'AM';
+                        hh = hh % 12; hh = hh ? hh : 12;
+                        return `${String(hh).padStart(2, '0')}:${mm} ${ampm}`;
+                    }
+                }
+                return s;
+            } catch(e) { return timeStr; }
+        }
+
+        // --- FUNGSI FORMAT TARIKH DD/MM/YYYY ---
+        function formatDateDisplay(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                let s = String(dateStr).trim();
+                if (s.includes('T')) {
+                    let d = new Date(s);
+                    if (!isNaN(d.getTime())) {
+                        let day = String(d.getDate()).padStart(2, '0');
+                        let month = String(d.getMonth() + 1).padStart(2, '0');
+                        let year = d.getFullYear();
+                        return `${day}/${month}/${year}`;
+                    }
+                }
+                if (s.includes('-') && s.split('-').length === 3 && !s.includes('T')) {
+                    let parts = s.split('-');
+                    let year = parts[0];
+                    let month = String(parts[1]).padStart(2, '0');
+                    let day = String(parts[2]).padStart(2, '0');
+                    return `${day}/${month}/${year}`;
+                }
+                if (s.includes('/')) {
+                    let parts = s.split('/');
+                    if (parts.length === 3) {
+                        let p1 = String(parts[0]).padStart(2, '0');
+                        let p2 = String(parts[1]).padStart(2, '0');
+                        let year = parts[2].split(' ')[0]; 
+                        return `${p1}/${p2}/${year}`;
+                    }
+                }
+                return s; 
+            } catch(e) { return dateStr; }
+        }
+
         // --- 1. Real-time Text Update ---
         function bindText(inputId, outputId, type = 'text') {
             const input = document.getElementById(inputId);
+            if(!input) return;
+
             const updateText = () => {
                 const output = document.getElementById(outputId); 
                 if (!output) return;
                 
-                if (!input.value.trim()) {
+                if (!input.value || !input.value.trim()) {
                     output.textContent = '-';
                     return;
                 }
+
                 if (type === 'date') {
-                    const[year, month, day] = input.value.split('-');
-                    if (year && month && day) output.textContent = `${day}/${month}/${year}`;
-                    else output.textContent = input.value;
+                    output.textContent = formatDateDisplay(input.value);
+                } else if (type === 'time') {
+                    output.textContent = formatTimeDisplay(input.value);
                 } else {
                     output.textContent = input.value;
                 }
@@ -372,19 +440,24 @@
         bindText('in_dijana', 'out_dijana', 'date'); 
 
         const inAktiviti = document.getElementById('in_aktiviti');
-        const updateAktiviti = () => {
-            const outVerticalText = document.getElementById('out_vertical_text');
-            if(outVerticalText) outVerticalText.textContent = `LAPORAN ${inAktiviti.value.toUpperCase()}`;
-        };
-        inAktiviti.addEventListener('change', updateAktiviti); updateAktiviti(); 
+        if(inAktiviti) {
+            const updateAktiviti = () => {
+                const outVerticalText = document.getElementById('out_vertical_text');
+                if(outVerticalText) outVerticalText.textContent = `LAPORAN ${inAktiviti.value.toUpperCase()}`;
+            };
+            inAktiviti.addEventListener('change', updateAktiviti); updateAktiviti(); 
+        }
 
         // --- 2. Real-time List ---
         function bindList(inputId, outputId) {
             const input = document.getElementById(inputId);
+            if(!input) return;
+
             const updateList = () => {
                 const output = document.getElementById(outputId); 
                 if (!output) return;
-                const text = input.value;
+                
+                const text = input.value || '';
                 if(!text.trim()) { output.innerHTML = '<li>-</li>'; return; }
                 const items = text.split(';').filter(item => item.trim() !== '');
                 output.innerHTML = items.map(item => `<li>${item.trim()}</li>`).join('');
@@ -395,9 +468,11 @@
         bindList('in_objektif', 'out_objektif'); bindList('in_ringkasan', 'out_ringkasan');
         bindList('in_impak', 'out_impak'); bindList('in_cadangan', 'out_cadangan');
 
-        // --- 3. Image Upload (Kompres Maks 400px) ---
+        // --- 3. Image Upload (Kompres 400px) ---
         function bindImage(inputId, outputId, placeholderId) {
             const input = document.getElementById(inputId);
+            if(!input) return;
+            
             input.addEventListener('change', function(e) {
                 const output = document.getElementById(outputId); 
                 const placeholder = document.getElementById(placeholderId);
@@ -422,8 +497,7 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, width, height);
                             
-                            // Compress
-                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
+                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6);
                             output.src = compressedDataUrl;
                             output.classList.remove('hidden');
                             placeholder.style.display = 'none';
@@ -434,11 +508,11 @@
                 }
             });
         }
-        bindImage('in_gambar1', 'out_gambar1', 'placeholder1'); 
-        bindImage('in_gambar2', 'out_gambar2', 'placeholder2');
-        bindImage('in_gambar3', 'out_gambar3', 'placeholder3'); 
+        
+        // Panggil untuk 3 kotak gambar
+        ;['1','2','3'].forEach(num => bindImage('in_gambar'+num, 'out_gambar'+num, 'placeholder'+num));
 
-        // --- 4. TAB NAVIGATION ---
+        // --- 4. NAVIGATION (TAB SWITCHING) ---
         function switchTab(tabName) {
             const viewJanaan = document.getElementById('view-janaan');
             const viewDashboard = document.getElementById('view-dashboard');
@@ -460,23 +534,20 @@
                 btnJanaan.className = "px-4 py-1.5 text-sm font-medium text-gray-500 hover:text-brandBlue rounded-md transition-all flex items-center gap-2";
                 btnSave.style.display = "none"; 
                 
-                if(globalDbRecords.length === 0) fetchFromGoogleSheets(); // Load auto bila buka tab
+                if(globalDbRecords.length === 0) fetchFromGoogleSheets(); 
                 window.scrollTo(0,0);
             }
         }
 
-        // --- 5. CLOUD DATABASE (GOOGLE SHEETS) LOGIC ---
+        // --- 5. CLOUD DATABASE LOGIC ---
         function getImgSrc(imgId) {
             const img = document.getElementById(imgId);
             return (img && !img.classList.contains('hidden') && img.src.startsWith('data:')) ? img.src : '';
         }
 
         async function simpanKeGoogleSheet() {
-            if(SCRIPT_URL === "MASUKKAN_URL_GOOGLE_SCRIPT_DI_SINI") {
-                alert("Sila masukkan Web App URL Google Script pada fail HTML terlebih dahulu!"); return;
-            }
             if(!document.getElementById('in_tajuk').value.trim()) {
-                alert("Sila isi Tajuk Program sebelum menyimpan rekod."); return;
+                alert("Sila isi sekurang-kurangnya 'Tajuk Program' sebelum menyimpan."); return;
             }
 
             const btn = document.getElementById('btn-save');
@@ -497,35 +568,46 @@
                 gambar1: getImgSrc('out_gambar1'), 
                 gambar2: getImgSrc('out_gambar2'),
                 gambar3: getImgSrc('out_gambar3'), 
-                gambar4: '' // Kekal kosong supaya database google sheet tak error
+                gambar4: "" 
             };
 
             try {
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(record)
                 });
-                alert('Rekod berjaya disimpan!');
                 
-                // Clear form selepas berjaya save
-                document.getElementById('in_tajuk').value = '';
-                document.getElementById('in_objektif').value = '';
-                document.getElementById('in_ringkasan').value = '';
-                document.getElementById('in_impak').value = '';
-                document.getElementById('in_cadangan').value = '';
+                alert('Rekod e-OPR berjaya disimpan!');
                 
-                switchTab('dashboard');
-                fetchFromGoogleSheets(); // Reload table
+                document.getElementById('oprForm').reset();
+                const ts = new Date().toISOString().split('T')[0];
+                document.getElementById('in_tarikh').value = ts;
+                document.getElementById('in_dijana').value = ts;
+                
+                ['1','2','3'].forEach(num => {
+                    const img = document.getElementById('out_gambar'+num);
+                    const ph = document.getElementById('placeholder'+num);
+                    if(img) { img.src = ''; img.classList.add('hidden'); }
+                    if(ph) { ph.style.display = 'block'; }
+                });['in_unit','in_aktiviti','in_panitia','in_tajuk','in_tarikh','in_masa','in_lokasi','in_penglibatan',
+                 'in_objektif','in_ringkasan','in_impak','in_cadangan','in_disediakan','in_dijana'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.dispatchEvent(new Event('input'));
+                });
+                
+                switchTab('dashboard'); 
+                setTimeout(() => { fetchFromGoogleSheets(); }, 1500); 
+
             } catch (error) {
-                alert("Ralat sambungan: Gagal menyimpan data.");
+                alert("Ralat: Sambungan internet terputus.");
             } finally {
                 btn.innerHTML = oriBtn; btn.disabled = false;
             }
         }
 
         async function fetchFromGoogleSheets() {
-            if(SCRIPT_URL === "MASUKKAN_URL_GOOGLE_SCRIPT_DI_SINI") return;
-
             const tbody = document.getElementById('table-body');
             const emptyState = document.getElementById('table-empty');
             const loader = document.getElementById('table-loader');
@@ -536,77 +618,57 @@
             emptyState.classList.remove('hidden');
             loader.classList.remove('hidden');
             icon.classList.add('hidden');
-            msg.textContent = "Mengambil data...";
+            msg.textContent = "Menyemak pangkalan data...";
 
             try {
-                const response = await fetch(SCRIPT_URL);
+                const response = await fetch(SCRIPT_URL + "?action=read&t=" + new Date().getTime());
                 const data = await response.json();
-                globalDbRecords = data; 
                 
-                // Reset filter kepada asal setiap kali refresh
-                document.getElementById('filter-unit').value = 'ALL';
-                document.getElementById('filter-disediakan').value = '';
-                
-                renderTable();
+                if (Array.isArray(data)) {
+                    globalDbRecords = data; 
+                    renderTable();
+                } else {
+                    throw new Error("Invalid Format");
+                }
             } catch (error) {
                 loader.classList.add('hidden'); icon.classList.remove('hidden');
-                msg.textContent = "Gagal memuat turun data. Sila semak capaian internet.";
+                msg.textContent = "Tiada rekod dijumpai atau terdapat ralat sambungan.";
             }
         }
 
         async function deleteRecord(id) {
             const passcode = prompt('Sila masukkan Kod Laluan untuk memadam rekod:');
             if (passcode === '6877') {
-                if(confirm('Kod disahkan! Adakah anda pasti memadam rekod ini?')) {
+                if(confirm('Kod disahkan! Adakah anda pasti memadam rekod ini secara kekal?')) {
                     const btn = document.getElementById(`btn-del-${id}`);
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    if(btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                     
                     try {
                         await fetch(SCRIPT_URL, {
                             method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ action: "delete", id: id.toString() })
                         });
-                        fetchFromGoogleSheets();
+                        
+                        globalDbRecords = globalDbRecords.filter(r => r.id != id);
+                        renderTable();
+                        setTimeout(() => fetchFromGoogleSheets(), 2000);
                     } catch (error) {
                         alert("Gagal memadam data.");
-                        btn.innerHTML = '<i class="fas fa-trash"></i>';
+                        if(btn) btn.innerHTML = '<i class="fas fa-trash"></i>';
                     }
                 }
             } else if (passcode !== null) {
-                alert('Kod laluan SALAH!');
+                alert('Kod laluan SALAH! Anda tiada akses memadam rekod.');
             }
         }
 
-        function formatDateDisplay(dateStr) {
-            if(!dateStr) return '-';
-            const parts = dateStr.split('T')[0].split('-');
-            if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            return dateStr;
-        }
-
-        // --- FUNGSI TAPISAN (FILTER) ---
-        function applyFilters() {
-            const filterUnit = document.getElementById('filter-unit').value;
-            const filterDisediakan = document.getElementById('filter-disediakan').value.toLowerCase().trim();
-
-            const filteredRecords = globalDbRecords.filter(r => {
-                const matchUnit = filterUnit === 'ALL' || r.unit === filterUnit;
-                const disediakanText = r.disediakan ? r.disediakan.toLowerCase() : '';
-                const matchDisediakan = disediakanText.includes(filterDisediakan);
-                
-                return matchUnit && matchDisediakan;
-            });
-
-            renderTable(filteredRecords);
-        }
-
-        // --- RENDER JADUAL ---
-        function renderTable(recordsToRender = null) {
-            const records = recordsToRender || globalDbRecords;
-            
-            document.getElementById('score-kurikulum').textContent = globalDbRecords.filter(r => r.unit === 'UNIT KURIKULUM').length;
-            document.getElementById('score-hem').textContent = globalDbRecords.filter(r => r.unit === 'UNIT HEM').length;
-            document.getElementById('score-koko').textContent = globalDbRecords.filter(r => r.unit === 'UNIT KOKURIKULUM').length;
+        function renderTable() {
+            const records = globalDbRecords;
+            document.getElementById('score-kurikulum').textContent = records.filter(r => r.unit === 'UNIT KURIKULUM').length;
+            document.getElementById('score-hem').textContent = records.filter(r => r.unit === 'UNIT HEM').length;
+            document.getElementById('score-koko').textContent = records.filter(r => r.unit === 'UNIT KOKURIKULUM').length;
 
             const tbody = document.getElementById('table-body');
             const emptyState = document.getElementById('table-empty');
@@ -614,16 +676,8 @@
 
             if (records.length === 0) {
                 document.getElementById('table-loader').classList.add('hidden');
-                
-                if (globalDbRecords.length > 0) {
-                    document.getElementById('table-icon').className = "fas fa-search-minus text-4xl mb-3 text-gray-300 block";
-                    document.getElementById('table-msg').textContent = "Tiada rekod yang sepadan dengan carian / tapisan anda.";
-                } else {
-                    document.getElementById('table-icon').className = "fas fa-cloud-download-alt text-4xl mb-3 text-gray-300 block";
-                    document.getElementById('table-msg').textContent = "Belum ada rekod. Sila cipta OPR baru.";
-                }
-                
                 document.getElementById('table-icon').classList.remove('hidden');
+                document.getElementById('table-msg').textContent = "Belum ada rekod. Sila cipta OPR baru.";
                 emptyState.classList.remove('hidden');
             } else {
                 emptyState.classList.add('hidden');
@@ -653,21 +707,20 @@
             }
         }
 
-        // --- 6. MUAT TURUN PDF A4 STANDARD ---
+        // --- 6. MUAT TURUN PDF (DARI REKOD) ---
         function downloadFromDashboard(id) {
             const a4Container = document.getElementById('opr-document');
             const backupHTML = a4Container.innerHTML;
 
-            let r = globalDbRecords.find(rec => rec.id === id);
+            let r = globalDbRecords.find(rec => rec.id == id);
             if(!r) return;
 
-            // MASUKKAN DATA KE DALAM PREVIEW SEPERTI BIASA
             document.getElementById('out_unit').textContent = r.unit;
-            document.getElementById('out_vertical_text').textContent = `LAPORAN ${r.aktiviti.toUpperCase()}`;
+            document.getElementById('out_vertical_text').textContent = `LAPORAN ${(r.aktiviti||'').toUpperCase()}`;
             document.getElementById('out_panitia').textContent = r.panitia || '-';
             document.getElementById('out_tajuk').textContent = r.tajuk || '-';
             document.getElementById('out_tarikh').textContent = formatDateDisplay(r.tarikh);
-            document.getElementById('out_masa').textContent = r.masa || '-';
+            document.getElementById('out_masa').textContent = formatTimeDisplay(r.masa);
             document.getElementById('out_lokasi').textContent = r.lokasi || '-';
             document.getElementById('out_penglibatan').textContent = r.penglibatan || '-';
             document.getElementById('out_disediakan').textContent = r.disediakan || '-';
@@ -690,63 +743,23 @@
 
             const btn = document.getElementById(`btn-dl-${id}`);
             const originalIcon = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
-            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true;
 
-            // Scroll to top supaya html2canvas tidak memotong paparan jika page di scroll
-            window.scrollTo(0, 0);
+            const opt = {
+                margin: 0,
+                filename: `eOPR_${r.aktiviti}_${(r.tajuk||'TIADA_TAJUK').replace(/ /g, '_').substring(0,20)}_${formatDateDisplay(r.tarikh).replace(/\//g, '')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'px', format:[794, 1123], orientation: 'portrait' }
+            };
 
-            setTimeout(() => {
-                const opt = {
-                    margin: 0,
-                    filename: `eOPR_${r.aktiviti}_${(r.tajuk||'').replace(/ /g, '_').substring(0,20)}_${formatDateDisplay(r.tarikh).replace(/\//g, '')}.pdf`,
-                    image: { type: 'jpeg', quality: 1 },
-                    html2canvas: { 
-                        scale: 2, 
-                        useCORS: true, 
-                        scrollY: 0,
-                        onclone: function(clonedDoc) {
-                            // BEBASKAN SEMUA RINTANGAN CSS
-                            const selectors =['html', 'body', 'main', '#view-janaan', 'section'];
-                            selectors.forEach(sel => {
-                                const els = clonedDoc.querySelectorAll(sel);
-                                els.forEach(el => {
-                                    el.style.setProperty('overflow', 'visible', 'important');
-                                    el.style.setProperty('height', 'auto', 'important');
-                                    el.style.setProperty('max-height', 'none', 'important');
-                                    el.style.setProperty('display', 'block', 'important'); 
-                                });
-                            });
-
-                            const viewJanaan = clonedDoc.getElementById('view-janaan');
-                            if (viewJanaan) viewJanaan.classList.remove('hidden');
-
-                            const element = clonedDoc.getElementById('opr-document');
-                            if (element) {
-                                element.style.setProperty('transform', 'none', 'important');
-                                element.style.setProperty('width', '794px', 'important');
-                                element.style.setProperty('height', '1123px', 'important');
-                                element.style.setProperty('margin', '0', 'important');
-                                element.style.setProperty('box-shadow', 'none', 'important');
-                            }
-                        }
-                    },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-
-                html2pdf().set(opt).from(a4Container).save().then(() => {
-                    a4Container.innerHTML = backupHTML; 
-                    btn.innerHTML = originalIcon; 
-                    btn.disabled = false;
-                }).catch(err => {
-                    alert('Terdapat ralat menjana PDF.'); 
-                    a4Container.innerHTML = backupHTML; 
-                    btn.innerHTML = originalIcon; 
-                    btn.disabled = false;
-                });
-            }, 300);
+            html2pdf().set(opt).from(a4Container).save().then(() => {
+                a4Container.innerHTML = backupHTML; btn.innerHTML = originalIcon; btn.disabled = false;
+            }).catch(err => {
+                alert('Terdapat ralat menjana PDF. Sila cuba lagi.'); 
+                a4Container.innerHTML = backupHTML; btn.innerHTML = originalIcon; btn.disabled = false;
+            });
         }
     </script>
 </body>
-
 </html>
